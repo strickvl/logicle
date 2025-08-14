@@ -15,7 +15,8 @@ import { useBackendsModels } from '@/hooks/backends'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from 'react'
-import { Textarea } from '@/components/ui/textarea'
+import ConditionalEditor from '@/components/ui/ConditionalEditor'
+import { useUserProfile } from '@/components/providers/userProfileContext'
 import * as dto from '@/types/dto'
 import ImageUpload from '@/components/ui/ImageUpload'
 import { Switch } from '@/components/ui/switch'
@@ -419,6 +420,9 @@ export const AssistantForm = ({ assistant, onSubmit, onChange, onValidate, fireS
   const [activeTab, setActiveTab] = useState<TabState>('general')
   const backendModels = models || []
   const environment = useEnvironment()
+  const isAdvancedEditor =
+    useUserProfile()?.preferences?.useAdvancedCodeEditor ??
+    dto.userPreferencesDefaults.useAdvancedCodeEditor
   const modelsWithNickname = backendModels
     .flatMap((backend) => {
       return backend.models.map((m) => {
@@ -722,20 +726,6 @@ export const AssistantForm = ({ assistant, onSubmit, onChange, onValidate, fireS
             )}
             <FormField
               control={form.control}
-              name="prompts"
-              render={({ field }) => (
-                <FormItem label={t('conversation_starters')}>
-                  <StringList
-                    value={field.value}
-                    maxItems={8}
-                    onChange={field.onChange}
-                    addNewPlaceHolder={t('insert_a_conversation_starter_placeholder')}
-                  ></StringList>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="tokenLimit"
               render={({ field }) => (
                 <FormItem label={t('token-limit')}>
@@ -771,11 +761,15 @@ export const AssistantForm = ({ assistant, onSubmit, onChange, onValidate, fireS
             name="systemPrompt"
             render={({ field }) => (
               <FormItem className="h-full flex flex-col">
-                <Textarea
+                <ConditionalEditor
+                  ref={field.ref}
                   className="flex-1"
                   rows={3}
                   placeholder={t('create_assistant_field_system_prompt_placeholder')}
-                  {...field}
+                  value={field.value}
+                  onChange={(val) => field.onChange(val)}
+                  onBlur={() => field.onBlur()}
+                  useAdvancedEditor={isAdvancedEditor}
                 />
               </FormItem>
             )}

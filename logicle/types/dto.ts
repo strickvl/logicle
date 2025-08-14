@@ -82,12 +82,14 @@ export type UserPreferences = {
   language: string
   conversationEditing: boolean
   showIconsInChatbar: boolean
+  useAdvancedCodeEditor: boolean
 }
 
 export const userPreferencesDefaults: UserPreferences = {
   language: 'default',
   conversationEditing: true,
   showIconsInChatbar: true,
+  useAdvancedCodeEditor: false,
 }
 
 export type UserProfile = Omit<User, 'preferences' | 'password'> & {
