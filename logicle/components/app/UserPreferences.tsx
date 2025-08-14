@@ -102,6 +102,19 @@ export const UserPreferences = () => {
           </FormRow>
         )}
       />
+      <FormField
+        name="useAdvancedCodeEditor"
+        render={({ field }) => (
+          <FormRow label={t('use_advanced_code_editor')}>
+            <Switch
+              onCheckedChange={(value) => {
+                form.setValue(field.name, value)
+              }}
+              checked={field.value ?? dto.userPreferencesDefaults.useAdvancedCodeEditor}
+            ></Switch>
+          </FormRow>
+        )}
+      />
     </Form>
   )
 }

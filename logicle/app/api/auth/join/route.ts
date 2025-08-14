@@ -32,6 +32,5 @@ export async function POST(req: Request) {
     ssoUser: 0,
   })
 
-
   return ApiResponses.created(user)
 }
